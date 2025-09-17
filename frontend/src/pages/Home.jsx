@@ -111,6 +111,7 @@ const Home = () => {
             </div>
 
             <FeaturedCollection />
+            
             <FeaturesSection />
         </div>
     )
