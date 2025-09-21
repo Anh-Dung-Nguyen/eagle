@@ -16,7 +16,7 @@ const App = () => {
     <BrowserRouter>
       <Toaster position = 'top-right'/>
       <Routes>
-        <Route path = "/" element = {<UserLayout />}>
+        <Route path = "/" element = {<UserLayout />} />
           {/* User Layout */}
           <Route index element = {<Home />} />
           <Route path = 'login' element = {<Login />} />
