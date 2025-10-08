@@ -11,7 +11,7 @@ const ProductDetails = ({productId}) => {
     const dispatch = useDispatch();
     const {selectedProduct, loading, error, similarProducts} = useSelector((state) => state.products);
     const {user, guestId} = useSelector((state) => state.auth);
-    const [mainImage, setMainImage] = useState("");
+    const [mainImage, setMainImage] = useState(null);
     const [selectedSize, setSelectedSize] = useState("");
     const [selectedColor, setSelectedColor] = useState("");
     const [quantity, setQuantity] = useState(1);
@@ -103,13 +103,19 @@ const ProductDetails = ({productId}) => {
                         </div>
 
                         {/* Main Image */}
-                        <div className = 'md:w-1/2'>
-                            <div className = 'mb-4'>
-                                <img 
-                                    src = {mainImage} 
-                                    alt = "Main Product"
-                                    className = 'w-full h-auto object-cover rounded-lg'
-                                />
+                        <div className='md:w-1/2'>
+                            <div className='mb-4'>
+                                {mainImage ? (
+                                    <img 
+                                        src={mainImage} 
+                                        alt="Main Product"
+                                        className='w-full h-auto object-cover rounded-lg'
+                                    />
+                                ) : (
+                                    <div className='w-full h-[400px] bg-gray-100 rounded-lg flex items-center justify-center'>
+                                        <span className='text-gray-500'>Loading image...</span>
+                                    </div>
+                                )}
                             </div>
                         </div>
 
