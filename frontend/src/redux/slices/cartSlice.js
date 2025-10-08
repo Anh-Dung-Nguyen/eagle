@@ -3,8 +3,25 @@ import axios from "axios";
 
 // Helper function to load cart from storage
 const loadCartFromStorage = () => {
-    const storedCart = localStorage.getItem("cart");
-    return storedCart ? JSON.parse(storedCart) : {products: []};
+    try {
+        const storedCart = localStorage.getItem("cart");
+
+        if (!storedCart || storedCart === "undefined" || storedCart === "null") {
+            return { products: [] };
+        }
+
+        const parsed = JSON.parse(storedCart);
+
+        if (!parsed || typeof parsed !== "object" || !Array.isArray(parsed.products)) {
+            return { products: [] };
+        }
+
+        return parsed;
+    } catch (error) {
+        console.warn("Invalid cart data in localStorage, resetting cart.", error);
+        localStorage.removeItem("cart");
+        return { products: [] };
+    }
 };
 
 // Helper function to save cart to localStorage
@@ -128,7 +145,7 @@ const cartSlice = createSlice({
             })
             .addCase(fetchCart.fulfilled, (state, action) => {
                 state.loading = false;
-                state.error = action.payload;
+                state.cart = action.payload;
                 saveCartToStorage(action.payload);
             })
             .addCase(fetchCart.rejected, (state, action) => {
@@ -141,7 +158,7 @@ const cartSlice = createSlice({
             })
             .addCase(addToCart.fulfilled, (state, action) => {
                 state.loading = false;
-                state.error = action.payload;
+                state.cart = action.payload;
                 saveCartToStorage(action.payload);
             })
             .addCase(addToCart.rejected, (state, action) => {
@@ -154,7 +171,7 @@ const cartSlice = createSlice({
             })
             .addCase(updateCartItemQuantity.fulfilled, (state, action) => {
                 state.loading = false;
-                state.error = action.payload;
+                state.cart = action.payload;
                 saveCartToStorage(action.payload);
             })
             .addCase(updateCartItemQuantity.rejected, (state, action) => {
@@ -167,7 +184,7 @@ const cartSlice = createSlice({
             })
             .addCase(removeFromCart.fulfilled, (state, action) => {
                 state.loading = false;
-                state.error = action.payload;
+                state.cart = action.payload;
                 saveCartToStorage(action.payload);
             })
             .addCase(removeFromCart.rejected, (state, action) => {
@@ -180,7 +197,7 @@ const cartSlice = createSlice({
             })
             .addCase(mergeCart.fulfilled, (state, action) => {
                 state.loading = false;
-                state.error = action.payload;
+                state.cart = action.payload;
                 saveCartToStorage(action.payload);
             })
             .addCase(mergeCart.rejected, (state, action) => {
