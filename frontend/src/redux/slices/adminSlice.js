@@ -11,7 +11,7 @@ export const fetchUsers = createAsyncThunk("admin/fetchUsers", async() => {
         },
     );
 
-    response.data;
+    return response.data;
 });
 
 // Add the create user action
@@ -41,7 +41,7 @@ export const updateUser = createAsyncThunk("admin/updateUser", async({id, name, 
         },
     );
 
-    response.data;
+    return response.data.user;
 });
 
 // Delete an user
