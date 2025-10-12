@@ -1,14 +1,25 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
+import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
+import { addUser, deleteUser, fetchUsers, updateUser } from '../../redux/slices/adminSlice';
 
 const UserManagement = () => {
-    const users = [
-        {
-            _id: 1,
-            name: "Nguyen Anh Dung",
-            email: "nguyenanhdung@eagle.com",
-            role: "admin",
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
+    const {user} = useSelector((state) => state.auth);
+    const {users, loading, error} = useSelector((state) => state.admin);
+
+    useEffect(() => {
+        if (user && user.role !== "admin") {
+            navigate("/");
+        } 
+    }, [user, navigate]);
+
+    useEffect(() => {
+        if (user && user.role === "admin") {
+            dispatch(fetchUsers());
         }
-    ];
+    }, [dispatch, user]);
 
     const [formData, setFormData] = useState({
         name: "",
@@ -26,6 +37,7 @@ const UserManagement = () => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
+        dispatch(addUser(formData));
 
         // Reset the form after the submission
         setFormData({
@@ -37,12 +49,12 @@ const UserManagement = () => {
     };
 
     const handleRoleChange = (userId, newRole) => {
-        console.log({id: userId, role: newRole});
+        dispatch(updateUser({id: userId, role: newRole}));
     };
 
     const handleDeleteUser = (userId) => {
         if (window.confirm("Are you sure that you want to delete this user?")) {
-            console.log("deleting user with ID: ", userId);
+            dispatch(deleteUser(userId));
         }
     };
 
@@ -51,6 +63,8 @@ const UserManagement = () => {
             <h2 className = 'text-2xl font-bold mb-6'>
                 User Management
             </h2>
+            {loading && <p>Loading ...</p>}
+            {error && <p>Error: {error}</p>}
 
             {/* Add new user form */}
             <div className = 'p-6 rounded-lg mb-6'>
